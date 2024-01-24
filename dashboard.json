@@ -1,0 +1,183 @@
+{
+	"version": 1,
+	"allow_edit": true,
+	"plugins": [],
+	"panes": [
+		{
+			"width": 1,
+			"row": {
+				"3": 13
+			},
+			"col": {
+				"3": 1
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "gauge",
+					"settings": {
+						"title": "humidity",
+						"value": "datasources[\"humidity\"][\"feeds\"][1][\"field2\"]",
+						"units": "%",
+						"min_value": 0,
+						"max_value": 100
+					}
+				},
+				{
+					"type": "sparkline",
+					"settings": {
+						"title": "",
+						"value": [
+							"datasources[\"humidity\"][\"feeds\"][1][\"field2\"]"
+						]
+					}
+				}
+			]
+		},
+		{
+			"width": 1,
+			"row": {
+				"3": 1
+			},
+			"col": {
+				"3": 2
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "gauge",
+					"settings": {
+						"title": "predicted_temperature",
+						"value": "datasources[\"predicted_temperature\"][\"feeds\"][1][\"field3\"]",
+						"units": "C",
+						"min_value": 0,
+						"max_value": 100
+					}
+				},
+				{
+					"type": "sparkline",
+					"settings": {
+						"title": "",
+						"value": [
+							"datasources[\"predicted_temperature\"][\"feeds\"][1][\"field3\"]"
+						]
+					}
+				}
+			]
+		},
+		{
+			"width": 1,
+			"row": {
+				"3": 1
+			},
+			"col": {
+				"3": 1
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "gauge",
+					"settings": {
+						"title": "temperature",
+						"value": "datasources[\"temperature\"][\"feeds\"][1][\"field1\"]",
+						"units": "C",
+						"min_value": 0,
+						"max_value": 100
+					}
+				},
+				{
+					"type": "sparkline",
+					"settings": {
+						"value": [
+							"datasources[\"temperature\"][\"feeds\"][1][\"field1\"]"
+						]
+					}
+				}
+			]
+		},
+		{
+			"width": 1,
+			"row": {
+				"3": 13
+			},
+			"col": {
+				"3": 2
+			},
+			"col_width": 1,
+			"widgets": [
+				{
+					"type": "gauge",
+					"settings": {
+						"title": "predicted_humidity",
+						"value": "datasources[\"predicted_humidity\"][\"feeds\"][1][\"field4\"]",
+						"units": "%",
+						"min_value": 0,
+						"max_value": 100
+					}
+				},
+				{
+					"type": "sparkline",
+					"settings": {
+						"title": "",
+						"value": [
+							"datasources[\"predicted_humidity\"][\"feeds\"][1][\"field4\"]"
+						]
+					}
+				}
+			]
+		}
+	],
+	"datasources": [
+		{
+			"name": "temperature",
+			"type": "JSON",
+			"settings": {
+				"url": "https://api.thingspeak.com/channels/2322809/fields/1.json?api_key=ZY7HFG37PWT8VCM5&results=2",
+				"use_thingproxy": true,
+				"refresh": 1,
+				"method": "GET"
+			}
+		},
+		{
+			"name": "humidity",
+			"type": "JSON",
+			"settings": {
+				"url": "https://api.thingspeak.com/channels/2322809/fields/2.json?api_key=ZY7HFG37PWT8VCM5&results=2",
+				"use_thingproxy": true,
+				"refresh": 1,
+				"method": "GET"
+			}
+		},
+		{
+			"name": "predicted_temperature",
+			"type": "JSON",
+			"settings": {
+				"url": "https://api.thingspeak.com/channels/2322809/fields/3.json?api_key=ZY7HFG37PWT8VCM5&results=2",
+				"use_thingproxy": true,
+				"refresh": 1,
+				"method": "GET"
+			}
+		},
+		{
+			"name": "predicted_humidity",
+			"type": "JSON",
+			"settings": {
+				"url": "https://api.thingspeak.com/channels/2322809/fields/4.json?api_key=ZY7HFG37PWT8VCM5&results=2",
+				"use_thingproxy": true,
+				"refresh": 1,
+				"method": "GET"
+			}
+		},
+		{
+			"name": "123",
+			"type": "JSON",
+			"settings": {
+				"url": "https://api.thingspeak.com/channels/2322809/status.json?api_key=ZY7HFG37PWT8VCM5",
+				"use_thingproxy": true,
+				"refresh": 5,
+				"method": "GET"
+			}
+		}
+	],
+	"columns": 3
+}

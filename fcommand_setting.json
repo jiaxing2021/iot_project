@@ -1,0 +1,6 @@
+{
+    "test_broker": "mqtt.eclipseprojects.io",
+    "broker":"localhost",
+    "port": 1883,
+    "baseTopic": "fcommands"
+}
