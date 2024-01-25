@@ -4,6 +4,15 @@ import json
 import random
 import cherrypy
 import pandas as pd
+import RPi.GPIO as GPIO
+
+heating = 11
+watering = 13
+fertilizer = 15
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(heating, GPIO.OUT)
+GPIO.setup(watering, GPIO.OUT)
+GPIO.setup(fertilizer, GPIO.OUT)
 
 class ec_pub:
 	def __init__(self, clientID, topic,broker,port):
@@ -30,7 +39,7 @@ class ec_pub:
 		self.client.myPublish(self.topic,message)
 		with open('sensor_log.json', 'w') as file:
 			json.dump(data, file)
-		print("published and saved")
+		print("ec data published and saved")
 		
 		time.sleep(1)
 
@@ -61,8 +70,17 @@ class ec_com_sub:
 		'''
 		code for raspberry GPIO control
 		'''
+		if self.data['data'][0]['Heating'] == 'on':
+			GPIO.output(heating, GPIO.HIGH)
+		if self.data['data'][0]['Heating'] == 'off':
+			GPIO.output(heating, GPIO.LOW)
 
-		print("done")
+		if self.data['data'][1]['Watering'] == 'on':
+			GPIO.output(watering, GPIO.HIGH)
+		if self.data['data'][1]['Watering'] == 'off':
+			GPIO.output(watering, GPIO.LOW)
+
+		print("ec com sub done")
 
 class fer_com_sub:
 	def __init__(self, clientID, topic, broker, port):
@@ -87,14 +105,21 @@ class fer_com_sub:
 			self.data['fertilizer'] = d[0]
 			
 		except:
-			data = {}
-			data['fertilizer'] = d[0]
+			self.data = {}
+			self.data['fertilizer'] = d[0]
 			with open('fer_command_log.json', 'w') as self.file:
-				json.dump(data, self.file)
+				json.dump(self.data, self.file)
 
 		'''
 		code for raspberry GPIO control
+
 		'''
+		if self.data['fertilizer'] == 'on':
+			GPIO.output(fertilizer, GPIO.HIGH)
+
+			time.sleep(3)
+			GPIO.output(fertilizer, GPIO.LOW)
+		
 
 		print("fertilizer done")
 
@@ -153,23 +178,30 @@ if __name__ == "__main__":
 	ec_pub.client.start()
 	time.sleep(2)
 
-	# t = 1*60*10 # second
-	t = 2
+	sleeptime = 5
+	t = sleeptime
+
 	i = 0
 	while True:
 		if i < len(temp):
-
-			temp_input = temp[i] + random.random()
-			temp_input = format(temp_input, '.2f')
-			temp_input = str(temp_input)
-			humid_input = humidity[i] + random.random()
-			humid_input = format(humid_input, '.2f')
-			humid_input = str(humid_input)
-
+			with open('sensor_setting.json') as file:
+				dic = json.load(file)
+				temp_num = dic["sensor_num"][0]['temp']
+				humidity_num = dic["sensor_num"][1]['humidity']
+				temp_input = []
+				humid_input = []
+				for j in range(temp_num):
+					temp_input.append(temp[i] + random.random())
+				temp_input = sum(temp_input)/temp_num
+				temp_input = format(temp_input, '.2f')
+				temp_input = str(temp_input)
+				for j in range(humidity_num):
+					humid_input.append(humidity[i] + random.random())
+				humid_input = sum(humid_input)/humidity_num
+				humid_input = format(humid_input, '.2f')
+				humid_input = str(humid_input)
+				ec_pub.publish(temp_input, humid_input)
 			i += 1
-			
-			ec_pub.publish(temp_input, humid_input)
-			
 			time.sleep(t)
 		else:
 			i = 0

@@ -7,9 +7,15 @@ class catalog(object):
     def GET(self, *uri):
         if len(uri) == 1:
             string = uri[0]
+
+            if string == "sensornum":
+                with open('sensor_setting.json') as files:
+                    settings = json.load(files)
+                    return json.dumps(settings)
+
             if string == "token":
                 with open('token.json') as file:
-                        settings = json.load(file)
+                    settings = json.load(file)
                 result = settings["token"]
                 return result
             
@@ -74,15 +80,52 @@ class catalog(object):
                     result = json.load(open('command_log.json'))
                     
                     return json.dumps(result)
+            else:
+                 return "wrong"
         if len(uri) == 2:
-             if uri[0] == 'newtoken':
+            if uri[0] == 'newtoken':
                 with open("token.json") as file:
                     dic = json.load(file)
                 dic["token"] = uri[1]
 
                 with open('token.json','w') as file:
                      json.dump(dic, file)
-             return uri[1]
+                return uri[1]
+
+            if uri[0] == 'change_sensor_num_temp':
+                try:
+                    with open('sensor_setting.json') as files:
+                        settings = json.load(file)
+                        a = settings["sensor_num"][1]['humidity']
+                        settings["sensor_num"][0]['temp'] = eval(uri[1])
+                        settings["sensor_num"][1]['humidity'] = a
+                        with open('sensor_setting.json','w') as file:
+                            json.dump(settings, file)
+                except:
+                    dic = {'sensor_num':[{'temp':1},{'humidity':1}]}
+                    dic["sensor_num"][0]['temp'] = eval(uri[1])
+                    with open('sensor_setting.json','w') as file:
+                        json.dump(dic, file)
+                return uri[1]
+            if uri[0] == 'change_sensor_num_humidity':
+                try:
+                    with open('sensor_setting.json') as files:
+                        settings = json.load(file)
+                        a = settings["sensor_num"][1]['humidity']
+                        settings["sensor_num"][1]['humidity'] = a
+                        settings["sensor_num"][1]['humidity'] = eval(uri[1])
+                        with open('sensor_setting.json','w') as file:
+                            json.dump(settings, file)
+                except:
+                    dic = {'sensor_num':[{'temp':1},{'humidity':1}]}
+                    dic["sensor_num"][1]['humidity'] = eval(uri[1])
+                    with open('sensor_setting.json','w') as file:
+                        json.dump(dic, file)
+                return uri[1]
+            else:
+                return "wrong"
+        else:
+            return "wrong"
         
         
     # def POST(self, *uri):

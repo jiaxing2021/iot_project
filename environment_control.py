@@ -132,7 +132,8 @@ if __name__ == "__main__":
     com_pub.client.start()
     time.sleep(2)
 
-    t = 30*4
+    sleeptime = 5
+    t = sleeptime
 
     while True:
         # if pub:

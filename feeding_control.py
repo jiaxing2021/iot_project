@@ -94,7 +94,7 @@ class fer_com_pub:
         # if h >= 70:
         #     h_c = 'off'
 
-        command = ['fer_on']
+        command = ['fertilizer turn on automaticly']
 
         self.client.myPublish(self.topic,command)
 
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     com_pub.client.start()
     time.sleep(2)
 
-    t_month = 2
+    t_month = 30
 
     while True:
         # if pub:

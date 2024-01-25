@@ -77,8 +77,8 @@ if __name__ == "__main__":
     temp_predicter = torch.load('DNN.pt')
     humid_predicter = torch.load('CNN.pt')
 
-    t = 30*4 #second
-
+    sleeptime = 5
+    t = sleeptime
 
     while True:
         # if pub:

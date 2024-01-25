@@ -137,10 +137,17 @@ class RESTBot:
                 dic['fer'] = 1
                 with open('fer_flag.json','w') as file:
                     json.dump(dic, file)
-
-        
-            
             text = "fer on"
+            self.bot.sendMessage(chat_ID, text=text)
+        elif message=="/sensor_num":
+            
+            with open('sensor_setting.json') as file:
+                dic = json.load(file)
+                temp_num = dic["sensor_num"][0]['temp']
+                humidity_num = dic["sensor_num"][1]['humidity']
+
+            
+            text = "temp sensors number is "+str(temp_num)+" humidity sensors number is "+str(humidity_num)
             self.bot.sendMessage(chat_ID, text=text)
 
         else:

@@ -94,7 +94,7 @@ class fer_com_pub:
         # if h >= 70:
         #     h_c = 'off'
 
-        command = ['fertilizer turn on']
+        command = ['fertilizer turn on manualy and it will turn off later']
 
         self.client.myPublish(self.topic,command)
 
