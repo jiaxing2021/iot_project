@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     while True:
         # if pub:
-        with open('sensor_log.json') as file:
+        with open('data_log.json') as file:
             dic = json.load(file)
         
             data_temp = torch.tensor([eval(dic['data'][0]['t'][-3]), 

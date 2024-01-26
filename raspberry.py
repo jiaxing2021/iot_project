@@ -26,13 +26,26 @@ class ec_pub:
 		self.client.stop()
 
 	def publish(self,temp,humid):
+		try:
+			with open('sensor_log.json') as file:
+				data = json.load(file)
 
-		with open('sensor_log.json') as file:
-			data = json.load(file)
+			data['data'][0]['t'].append(eval(temp))
+			data['data'][1]['h'].append(eval(humid))
+			
+			with open('sensor_log.json','w') as file:
+				json.dump(data, file)
+		except:
+			data = {'data':[{'t':[]},{'h':[]}]}
+			data['data'][0]['t'].append(eval(temp))
+			data['data'][1]['h'].append(eval(humid))
+			
 
-		data['data'][0]['t'].append(temp)
-		data['data'][1]['h'].append(humid)
-		
+			with open('sensor_log.json','w') as file:
+				json.dump(data, file)
+
+
+			
 		message = {'data':[{'t':''},{'h':''}]}
 		message['data'][0]['t']=str(temp)
 		message['data'][1]['h']=str(humid)

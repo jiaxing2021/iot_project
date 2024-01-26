@@ -63,14 +63,6 @@ class RESTBot:
             payload["heatingAction"] = "on"
             self.bot.sendMessage(chat_ID, text="Heating switched on")
 
-            # self.data['data'][0]['Heating'] = "On"
-            # if self.watering == 'On':
-            #     self.data['data'][1]['Watering'] = 'On'
-            # else:
-            #     self.data['data'][1]['Watering'] = 'Off'
-
-            # with open('command_log.json', 'w') as file:
-            #     json.dump(self.data, file)
         
         elif message == "/offheating":
 
@@ -81,14 +73,6 @@ class RESTBot:
             payload["heatingAction"] = "off"
             self.bot.sendMessage(chat_ID, text="Heating switched off")
 
-            # self.data['data'][0]['Heating'] = "Off"
-            # if self.watering == 'On':
-            #     self.data['data'][1]['Watering'] = 'On'
-            # else:
-            #     self.data['data'][1]['Watering'] = 'Off'
-
-            # with open('command_log.json', 'w') as file:
-            #     json.dump(self.data, file)
 
         elif message == "/onwatering":
 
@@ -99,15 +83,6 @@ class RESTBot:
             payload["wateringAction"] = "on"
             self.bot.sendMessage(chat_ID, text="Watering switched on")
 
-            # if self.heating == 'On':
-            #     self.data['data'][0]['Heating'] = 'On'
-            # else:
-            #     self.data['data'][0]['Heating'] = 'Off'
-            # self.data['data'][1]['Watering'] = "On"
-
-            # with open('command_log.json', 'w') as file:
-            #     json.dump(self.data, file)
-
         elif message == "/offwatering":
 
             bot_pub.publish('watering','off')
@@ -116,15 +91,6 @@ class RESTBot:
             payload["alert"] = time.time()
             payload["wateringAction"] = "off"
             self.bot.sendMessage(chat_ID, text="Watering switched off")
-
-            # if self.heating == 'On':
-            #     self.data['data'][0]['Heating'] = 'On'
-            # else:
-            #     self.data['data'][0]['Heating'] = 'Off'
-            # self.data['data'][1]['Watering'] = "Off"
-
-            # with open('command_log.json','w') as file:
-            #     json.dump(self.data, file)
 
         elif message == "/check":
             
@@ -152,7 +118,7 @@ class RESTBot:
             pre_temp = data['data'][0]['t'][-1]
             pre_humd = data['data'][1]['h'][-1]
             
-            text = "Temperature is "+temp+"and humidity is "+humd+" And the predicted temperature is"+pre_temp+' the predicted humidity is '+pre_humd
+            text = "Temperature is "+str(temp)+" and humidity is "+str(humd)+" And the predicted temperature is"+str(pre_temp)+" the predicted humidity is "+str(pre_humd)
 
             self.bot.sendMessage(chat_ID, text=text)
 
@@ -160,19 +126,11 @@ class RESTBot:
 
             bot_pub.publish('fer','on')
 
-            # try:
-            #     with open('fer_flag.json') as file:
-            #         dic = json.load(file)
-            #     dic['data'][0]['fer'] = 'on'
-            #     with open('fer_flag.json','w') as file:
-            #         json.dump(dic, file)
-            # except:
-            #     dic = {'data':[{'fer':''}]}
-            #     dic['data'][0]['fer'] = 'on'
-                
-            #     with open('fer_flag.json','w') as file:
-            #         json.dump(dic, file)
             text = "fer on"
+            self.bot.sendMessage(chat_ID, text=text)
+        elif message=="/comlist":
+
+            text = "/start /onheating /offheating /onwatering /offwatering /onfer /check /sensor_num"
             self.bot.sendMessage(chat_ID, text=text)
         elif message=="/sensor_num":
             

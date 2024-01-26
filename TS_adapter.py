@@ -6,7 +6,7 @@ import requests
 
 
 base_url = 'https://api.thingspeak.com/update?api_key=VUV0KZ2FWCBO69QY&'
-t = 30 #second
+t = 5 #second
 
 while True:
     with open('sensor_log.json') as file:
@@ -19,9 +19,9 @@ while True:
 
     with open('predicted_log.json') as file:
         data = json.load(file)
-    pre_temp = data['data'][0]['t'][-1]
+    pre_temp = data['data'][0]['t']
     pre_temp = eval(pre_temp)
-    pre_humd = data['data'][1]['h'][-1]
+    pre_humd = data['data'][1]['h']
     pre_humd = eval(pre_humd)
 
 

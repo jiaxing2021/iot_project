@@ -61,20 +61,7 @@ class com_pub:
             t_p = 0.0
             h = 0.0
             h_p = 0.0
-        # print(eval(dic['data'][0]['t'][-1]))
-        # if float(eval(dic['data'][0]['t'][-1])) <= 21:
-        #     t_c = 'on'
-        # if (float(eval(dic['data'][0]['t'][-1])) > 21) and (float(eval(dic['data'][0]['t'][-1])) <37):
-        #     t_c = 'on'
-        # if float(eval(dic['data'][0]['t'][-1])) >= 37:
-        #     t_c = 'off'
-        # if float(eval(dic['data'][1]['h'][-1])) <= 50:
-        #     h_c = 'on'
-        # if (float(eval(dic['data'][1]['h'][-1]))) > 50 and (float(eval(dic['data'][0]['t'][-1])) < 70):
-        #     h_c = 'on'
-        # if float(eval(dic['data'][1]['h'][-1])) >= 70:
-        #     h_c = 'off'
-            
+
         if t <= 21:
             t_c = 'on'
         if (t > 21) and (t <37):

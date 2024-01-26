@@ -95,7 +95,7 @@ class catalog(object):
             if uri[0] == 'change_sensor_num_temp':
                 try:
                     with open('sensor_setting.json') as files:
-                        settings = json.load(file)
+                        settings = json.load(files)
                         a = settings["sensor_num"][1]['humidity']
                         settings["sensor_num"][0]['temp'] = eval(uri[1])
                         settings["sensor_num"][1]['humidity'] = a
@@ -110,9 +110,9 @@ class catalog(object):
             if uri[0] == 'change_sensor_num_humidity':
                 try:
                     with open('sensor_setting.json') as files:
-                        settings = json.load(file)
-                        a = settings["sensor_num"][1]['humidity']
-                        settings["sensor_num"][1]['humidity'] = a
+                        settings = json.load(files)
+                        a = settings["sensor_num"][0]['temp']
+                        settings["sensor_num"][0]['temp'] = a
                         settings["sensor_num"][1]['humidity'] = eval(uri[1])
                         with open('sensor_setting.json','w') as file:
                             json.dump(settings, file)
@@ -152,5 +152,7 @@ if __name__ == "__main__":
     }
     webService = catalog()
     cherrypy.tree.mount(webService, '/', conf)
+    cherrypy.config.update({'server.socket_host': '0.0.0.0'})
+    cherrypy.config.update({'server.socket_port': 8888})
     cherrypy.engine.start()
     cherrypy.engine.block()
