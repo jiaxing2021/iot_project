@@ -4,6 +4,25 @@ from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 import json
 import time
 import cherrypy
+from MyMQTT import MyMQTT
+
+class bot_com_pub:
+    def __init__(self, clientID, topic,broker,port):
+        self.topic=topic
+        self.client=MyMQTT(clientID,broker,port,None)
+        
+    def start (self):
+        self.client.start()
+
+    def stop (self):
+        self.client.stop()
+    def publish(self,type,com):
+        self.type = type
+        self.com = com
+
+        command = [self.type,self.com]
+        self.client.myPublish(self.topic,command)
+        time.sleep(1)
 
 class RESTBot:
     exposed=True
@@ -36,64 +55,76 @@ class RESTBot:
         self.chatIDs.append(chat_ID)
         message = msg['text']
         if message == "/onheating":
+
+            bot_pub.publish('heating','on')
+
             payload = self.__message.copy()
             payload["alert"] = time.time()
             payload["heatingAction"] = "on"
             self.bot.sendMessage(chat_ID, text="Heating switched on")
 
-            self.data['data'][0]['Heating'] = "On"
-            if self.watering == 'On':
-                self.data['data'][1]['Watering'] = 'On'
-            else:
-                self.data['data'][1]['Watering'] = 'Off'
+            # self.data['data'][0]['Heating'] = "On"
+            # if self.watering == 'On':
+            #     self.data['data'][1]['Watering'] = 'On'
+            # else:
+            #     self.data['data'][1]['Watering'] = 'Off'
 
-            with open('command_log.json', 'w') as file:
-                json.dump(self.data, file)
+            # with open('command_log.json', 'w') as file:
+            #     json.dump(self.data, file)
         
         elif message == "/offheating":
+
+            bot_pub.publish('heating','off')
+
             payload = self.__message.copy()
             payload["alert"] = time.time()
             payload["heatingAction"] = "off"
             self.bot.sendMessage(chat_ID, text="Heating switched off")
 
-            self.data['data'][0]['Heating'] = "Off"
-            if self.watering == 'On':
-                self.data['data'][1]['Watering'] = 'On'
-            else:
-                self.data['data'][1]['Watering'] = 'Off'
+            # self.data['data'][0]['Heating'] = "Off"
+            # if self.watering == 'On':
+            #     self.data['data'][1]['Watering'] = 'On'
+            # else:
+            #     self.data['data'][1]['Watering'] = 'Off'
 
-            with open('command_log.json', 'w') as file:
-                json.dump(self.data, file)
+            # with open('command_log.json', 'w') as file:
+            #     json.dump(self.data, file)
 
         elif message == "/onwatering":
+
+            bot_pub.publish('watering','on')
+
             payload = self.__message.copy()
             payload["alert"] = time.time()
             payload["wateringAction"] = "on"
             self.bot.sendMessage(chat_ID, text="Watering switched on")
 
-            if self.heating == 'On':
-                self.data['data'][0]['Heating'] = 'On'
-            else:
-                self.data['data'][0]['Heating'] = 'Off'
-            self.data['data'][1]['Watering'] = "On"
+            # if self.heating == 'On':
+            #     self.data['data'][0]['Heating'] = 'On'
+            # else:
+            #     self.data['data'][0]['Heating'] = 'Off'
+            # self.data['data'][1]['Watering'] = "On"
 
-            with open('command_log.json', 'w') as file:
-                json.dump(self.data, file)
+            # with open('command_log.json', 'w') as file:
+            #     json.dump(self.data, file)
 
         elif message == "/offwatering":
+
+            bot_pub.publish('watering','off')
+
             payload = self.__message.copy()
             payload["alert"] = time.time()
             payload["wateringAction"] = "off"
             self.bot.sendMessage(chat_ID, text="Watering switched off")
 
-            if self.heating == 'On':
-                self.data['data'][0]['Heating'] = 'On'
-            else:
-                self.data['data'][0]['Heating'] = 'Off'
-            self.data['data'][1]['Watering'] = "Off"
+            # if self.heating == 'On':
+            #     self.data['data'][0]['Heating'] = 'On'
+            # else:
+            #     self.data['data'][0]['Heating'] = 'Off'
+            # self.data['data'][1]['Watering'] = "Off"
 
-            with open('command_log.json','w') as file:
-                json.dump(self.data, file)
+            # with open('command_log.json','w') as file:
+            #     json.dump(self.data, file)
 
         elif message == "/check":
             
@@ -126,17 +157,21 @@ class RESTBot:
             self.bot.sendMessage(chat_ID, text=text)
 
         elif message=="/onfer":
-            try:
-                with open('fer_flag.json') as file:
-                    dic = json.load(file)
-                dic['fer'] = 1
-                with open('fer_flag.json','w') as file:
-                    json.dump(dic, file)
-            except:
-                dic = {}
-                dic['fer'] = 1
-                with open('fer_flag.json','w') as file:
-                    json.dump(dic, file)
+
+            bot_pub.publish('fer','on')
+
+            # try:
+            #     with open('fer_flag.json') as file:
+            #         dic = json.load(file)
+            #     dic['data'][0]['fer'] = 'on'
+            #     with open('fer_flag.json','w') as file:
+            #         json.dump(dic, file)
+            # except:
+            #     dic = {'data':[{'fer':''}]}
+            #     dic['data'][0]['fer'] = 'on'
+                
+            #     with open('fer_flag.json','w') as file:
+            #         json.dump(dic, file)
             text = "fer on"
             self.bot.sendMessage(chat_ID, text=text)
         elif message=="/sensor_num":
@@ -173,6 +208,14 @@ class RESTBot:
 if __name__ == "__main__":
     # conf = json.load(open("setting.json"))
     # token = conf["telegramToken"]
+    conf = json.load(open("command_setting.json"))
+    broker = conf["broker"]
+    port = conf["port"]
+    topic = conf['baseTopic']
+    bot_pub = bot_com_pub("bot_com_pub", topic, broker, port)
+
+    bot_pub.client.start()
+
     with open('token.json') as file:
         dic = json.load(file)
     token = dic["token"]

@@ -59,26 +59,46 @@ class ec_com_sub:
 	def notify(self, topic, msg):
 		d = json.loads(msg)
 		# print(type(d))
-		with open('command_log.json') as self.file:
-			self.data = json.load(self.file)
+		print(d[0])
+		
+		if d[0] == 'heating':
+			if d[1] == 'on':
+				GPIO.output(heating, GPIO.HIGH)
+				print('bot_on')
+			if d[1] == 'off':
+				GPIO.output(heating, GPIO.LOW)
+		elif d[0] == 'watering':
+			if d[1] == 'on':
+				GPIO.output(watering, GPIO.HIGH)
+			if d[1] == 'off':
+				GPIO.output(watering, GPIO.LOW)
+		elif d[0] == 'fer':
+			if d[1] == 'on':
+				GPIO.output(fertilizer, GPIO.HIGH)
+				time.sleep(5)
+				GPIO.output(fertilizer, GPIO.LOW)
+		else:
+			with open('command_log.json') as self.file:
+				self.data = json.load(self.file)
+			
+			self.data['data'][0]['Heating'] = d[0]
+			self.data['data'][1]['Watering'] = d[1]
+			
+			with open('command_log.json', 'w') as self.file:
+				json.dump(self.data, self.file)
 
-		self.data['data'][0]['Heating'] = d[0]
-		self.data['data'][1]['Watering'] = d[1]
-		with open('command_log.json', 'w') as self.file:
-			json.dump(self.data, self.file)
+			'''
+			code for raspberry GPIO control
+			'''
+			if self.data['data'][0]['Heating'] == 'on':
+				GPIO.output(heating, GPIO.HIGH)
+			if self.data['data'][0]['Heating'] == 'off':
+				GPIO.output(heating, GPIO.LOW)
 
-		'''
-		code for raspberry GPIO control
-		'''
-		if self.data['data'][0]['Heating'] == 'on':
-			GPIO.output(heating, GPIO.HIGH)
-		if self.data['data'][0]['Heating'] == 'off':
-			GPIO.output(heating, GPIO.LOW)
-
-		if self.data['data'][1]['Watering'] == 'on':
-			GPIO.output(watering, GPIO.HIGH)
-		if self.data['data'][1]['Watering'] == 'off':
-			GPIO.output(watering, GPIO.LOW)
+			if self.data['data'][1]['Watering'] == 'on':
+				GPIO.output(watering, GPIO.HIGH)
+			if self.data['data'][1]['Watering'] == 'off':
+				GPIO.output(watering, GPIO.LOW)
 
 		print("ec com sub done")
 
@@ -97,57 +117,30 @@ class fer_com_sub:
 
 	def notify(self, topic, msg):
 		d = json.loads(msg)
-		# print(type(d))
-		
-		try:
-			with open('fer_command_log.json') as self.file:
-				self.data = json.load(self.file)
-			self.data['fertilizer'] = d[0]
-			
-		except:
-			self.data = {}
-			self.data['fertilizer'] = d[0]
-			with open('fer_command_log.json', 'w') as self.file:
-				json.dump(self.data, self.file)
-
-		'''
-		code for raspberry GPIO control
-
-		'''
-		if self.data['fertilizer'] == 'on':
+		print(d)
+		if d == "fer_on":
 			GPIO.output(fertilizer, GPIO.HIGH)
 
 			time.sleep(3)
 			GPIO.output(fertilizer, GPIO.LOW)
 		
+		try:
+			with open('fer_command_log.json') as self.file:
+				self.data = json.load(self.file)
+			self.data['fertilizer'] = d
+			
+		except:
+			self.data = {}
+			self.data['fertilizer'] = d
+			with open('fer_command_log.json', 'w') as self.file:
+				json.dump(self.data, self.file)
+
+		
 
 		print("fertilizer done")
 
-# class temp_humd(object):
-# 	exposed = True
-# 	def GET(self, *url):
-# 		with open('sensor_log.json') as file:
-# 			data = json.load(file)
-		
-# 		if len(url)!=0:
-# 			if url[0] == "retrivetemphumd":
-# 				return json.dumps(data)
 	
 if __name__ == "__main__":
-	# print("=================REST=================")
-	# conf={
-    #     '/':{
-    #         'request.dispatch':cherrypy.dispatch.MethodDispatcher(),
-    #         'tool.session.on':True
-    #     }
-    # }
-
-	# webService=temp_humd()
-	# cherrypy.tree.mount(webService,'/',conf)
-	# # cherrypy.config.update({'server.socket_host': '127.0.0.100'})
-	# # cherrypy.config.update({'server.socket_port': 8080})
-	# cherrypy.engine.start()
-	# # cherrypy.engine.block()
 
 	data = pd.read_csv("./data.csv")
 
@@ -161,13 +154,16 @@ if __name__ == "__main__":
 	port = conf["port"]
 	topic = conf['baseTopic']
 	ec_sub = ec_com_sub("ec_com_sub", topic, broker, port)
+
 	conf_fer = json.load(open("fer_command_setting.json"))
 	broker_fer = conf_fer["broker"]
 	port_fer = conf_fer["port"]
 	topic_fer = conf_fer['baseTopic']
 	fer_sub = fer_com_sub("fer_com_sub", topic_fer, broker_fer, port_fer)
+
 	ec_sub.start()
 	fer_sub.start()
+	# bot_sub.start()
 
 	print("=================pub=================")
 	conf=json.load(open("ec_settings.json"))
