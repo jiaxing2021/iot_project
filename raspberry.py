@@ -56,6 +56,18 @@ class ec_pub:
 		
 		time.sleep(1)
 
+class TS_pub(ec_pub):
+	def publish(self,temp,humid):
+
+		message = {'data':[{'t':''},{'h':''}]}
+		message['data'][0]['t']=str(temp)
+		message['data'][1]['h']=str(humid)
+		self.client.myPublish(self.topic,message)
+		print("TS data published")
+		
+		time.sleep(1)
+	
+
 class ec_com_sub:
 	def __init__(self, clientID, topic, broker, port):
 		self.client = MyMQTT(clientID, broker, port, self)
@@ -185,6 +197,14 @@ if __name__ == "__main__":
 	topic = conf['baseTopic']
 	ec_pub = ec_pub("ec_pub",topic,broker,port)
 	ec_pub.client.start()
+
+	conf_TS=json.load(open("post_ec_setting.json"))
+	broker_TS=conf_TS["broker"]
+	port_TS=conf_TS["port"]
+	topic_TS = conf_TS['baseTopic']
+	TS_pub = TS_pub("TS_pub",topic_TS,broker_TS,port_TS)
+	TS_pub.client.start()
+
 	time.sleep(2)
 
 	sleeptime = 5
@@ -210,6 +230,7 @@ if __name__ == "__main__":
 				humid_input = format(humid_input, '.2f')
 				humid_input = str(humid_input)
 				ec_pub.publish(temp_input, humid_input)
+				TS_pub.publish(temp_input, humid_input)
 			i += 1
 			time.sleep(t)
 		else:

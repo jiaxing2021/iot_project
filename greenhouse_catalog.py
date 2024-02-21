@@ -48,7 +48,7 @@ class catalog(object):
                     result = json.load(file)
                 result = result['data'][0]['t'] 
                 
-                result = result[-5] + '  ' + result[-4] + '  ' + result[-3] + '  ' + result[-2] + '  ' + result[-1]
+                result = str(result[-5]) + '  ' + str(result[-4]) + '  ' + str(result[-3]) + '  ' + str(result[-2]) + '  ' + str(result[-1])
                 return result
                 
             if string == "humidity":
@@ -57,7 +57,7 @@ class catalog(object):
                     result = json.load(file)
                 result = result['data'][1]['h'] 
                 
-                result = result[-5] + '  ' + result[-4] + '  ' + result[-3] + '  ' + result[-2] + '  ' + result[-1]
+                result = str(result[-5]) + '  ' + str(result[-4]) + '  ' + str(result[-3]) + '  ' + str(result[-2]) + '  ' + str(result[-1])
                 return result
             
             if string == "predicted":

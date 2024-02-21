@@ -59,18 +59,22 @@ class predicted_pub:
     def publish(self,temp_result,humid_result):
         
         predicted_data = [temp_result,humid_result]
+        message = {'data':[{'t':''},{'h':''}]}
+        message['data'][0]['t']=str(temp_result)
+        message['data'][1]['h']=str(humid_result)
 
-        self.client.myPublish(self.topic,predicted_data)
+        self.client.myPublish(self.topic,message)
         print(predicted_data)
+        print('TS pub')
         time.sleep(1)
 
 if __name__ == "__main__":
 
-    conf_pub=json.load(open("command_setting.json"))
+    conf_pub=json.load(open("post_setting.json"))
     broker_pub=conf_pub["broker"]
     port_pub=conf_pub["port"]
     topic_pub = conf_pub['baseTopic']
-    predicted_pub = predicted_pub("com_pub",topic_pub,broker_pub,port_pub)
+    predicted_pub = predicted_pub("post_pub",topic_pub,broker_pub,port_pub)
     predicted_pub.client.start()
     time.sleep(2)
 
@@ -102,7 +106,9 @@ if __name__ == "__main__":
 
         temp_result = str(temp_result)
         humid_result = str(humid_result)
+
         predicted_pub.publish(temp_result, humid_result)
+
         try:
             with open('predicted_log.json') as file:
                 dic = json.load(file)

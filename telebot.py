@@ -115,8 +115,8 @@ class RESTBot:
             with open('predicted_log.json') as file:
                 data = json.load(file)
 
-            pre_temp = data['data'][0]['t'][-1]
-            pre_humd = data['data'][1]['h'][-1]
+            pre_temp = data['data'][0]['t']
+            pre_humd = data['data'][1]['h']
             
             text = "Temperature is "+str(temp)+" and humidity is "+str(humd)+" And the predicted temperature is"+str(pre_temp)+" the predicted humidity is "+str(pre_humd)
 
@@ -146,22 +146,6 @@ class RESTBot:
         else:
             self.bot.sendMessage(chat_ID, text="Command not supported")
 
-    # def POST(self,*uri):
-    #     tosend=''
-    #     output={"status":"not-sent","message":tosend}
-    #     if len(uri)!=0:
-    #         if uri[0]=="led":
-    #             body=cherrypy.request.body.read()
-    #             jsonBody=json.loads(body)
-    #             alert=jsonBody["alert"]
-    #             action=jsonBody["action"]
-    #             tosend=f"ATTENTION!!!\n{alert}, you should {action}"
-    #             output={"status":"sent","message":tosend}
-    #             for chat_ID in self.chatIDs:
-    #                 self.bot.sendMessage(chat_ID, text=tosend)
-    #         # for chat_ID in self.chatIDs:
-    #         #     self.bot.sendMessage(chat_ID, text=tosend)
-    #     return json.dumps(output)
 
 if __name__ == "__main__":
     # conf = json.load(open("setting.json"))
